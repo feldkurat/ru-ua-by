@@ -1,0 +1,39 @@
+// "Russian-Ukrainian-Belarusian" for XKB.
+//
+// Stock Russian (winkeys) layout, unchanged, plus the five extra Cyrillic
+// letters, the apostrophe, currency signs, quotes and dashes on AltGr -
+// mirroring windows/ruuaby.klc.
+//
+// FOUR_LEVEL_ALPHABETIC is the equivalent of the KLC's "Cap = 5" column, so
+// Caps Lock capitalises the AltGr letters too: Caps + AltGr-S gives І.
+// The grave key is plain FOUR_LEVEL: its AltGr pair is two apostrophe forms,
+// not a letter case-pair, so Caps Lock must not touch it.
+
+default partial alphanumeric_keys modifier_keys
+xkb_symbols "basic" {
+
+    include "ru(winkeys)"
+
+    name[Group1]= "Russian-Ukrainian-Belarusian";
+
+    // ---- letters: AltGr / Shift+AltGr
+    key <AC02> { type[Group1] = "FOUR_LEVEL_ALPHABETIC", [ Cyrillic_yeru,     Cyrillic_YERU,     Ukrainian_i,               Ukrainian_I               ] }; // ы Ы і І
+    key <AB05> { type[Group1] = "FOUR_LEVEL_ALPHABETIC", [ Cyrillic_i,        Cyrillic_I,        Ukrainian_i,               Ukrainian_I               ] }; // и И і І
+    key <AD09> { type[Group1] = "FOUR_LEVEL_ALPHABETIC", [ Cyrillic_shcha,    Cyrillic_SHCHA,    Byelorussian_shortu,       Byelorussian_SHORTU       ] }; // щ Щ ў Ў
+    key <AD12> { type[Group1] = "FOUR_LEVEL_ALPHABETIC", [ Cyrillic_hardsign, Cyrillic_HARDSIGN, Ukrainian_yi,              Ukrainian_YI              ] }; // ъ Ъ ї Ї
+    key <AC11> { type[Group1] = "FOUR_LEVEL_ALPHABETIC", [ Cyrillic_e,        Cyrillic_E,        Ukrainian_ie,              Ukrainian_IE              ] }; // э Э є Є
+    key <AD07> { type[Group1] = "FOUR_LEVEL_ALPHABETIC", [ Cyrillic_ghe,      Cyrillic_GHE,      Ukrainian_ghe_with_upturn, Ukrainian_GHE_WITH_UPTURN ] }; // г Г ґ Ґ
+
+    // ---- apostrophe on the ё key (not a case pair - Caps Lock excluded)
+    key <TLDE> { type[Group1] = "FOUR_LEVEL", [ Cyrillic_io, Cyrillic_IO, apostrophe, rightsinglequotemark ] }; // ё Ё ' ’
+
+    // ---- punctuation and currency
+    key <AE04> { type[Group1] = "FOUR_LEVEL", [ 4,     semicolon,  U20B4,         dollar             ] }; // ₴ $
+    key <AE05> { type[Group1] = "FOUR_LEVEL", [ 5,     percent,    U20BD,         EuroSign           ] }; // ₽ €
+    key <AE09> { type[Group1] = "FOUR_LEVEL", [ 9,     parenleft,  guillemotleft, doublelowquotemark ] }; // « „
+    key <AE10> { type[Group1] = "FOUR_LEVEL", [ 0,     parenright, guillemotright, leftdoublequotemark ] }; // » “
+    key <AE11> { type[Group1] = "FOUR_LEVEL", [ minus, underscore, endash,        emdash             ] }; // – —
+
+    // Right Alt only - left Alt stays a plain Alt for application shortcuts.
+    include "level3(ralt_switch)"
+};

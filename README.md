@@ -69,7 +69,70 @@ windows/            everything Windows-specific
     msi/ruuaby_i386.msi     installer for 32-bit Windows
     amd64|wow64|i386/ruuaby.dll   the layout DLLs
     src/ruuaby.C            generated C source — readable form of the key tables
+linux/              everything Linux-specific (XKB)
+  install.sh          compile-check, install, register, add to the KDE layout list
+  uninstall.sh        remove everything again
+  selftest.sh         verify every AltGr key, offline and against the X server
+  symbols/ruuaby      the layout source (XKB symbols file)
+  apt-hook/99-ruuaby-xkb   re-register after xkb-data upgrades (optional)
 ```
+
+# Linux
+
+The same layout as an XKB layout, in the `linux` folder. AltGr (Right Alt)
+carries the extra letters exactly as on Windows: the base layer is the stock
+`ru(winkeys)` layout, so plain Russian typing is unchanged.
+
+```
+                 AltGr        AltGr+Shift
+   grave  ->     '                ’
+      S   ->     і                І
+      B   ->     і                І
+      O   ->     ў                Ў
+      ]   ->     ї                Ї
+      '   ->     є                Є
+      U   ->     ґ                Ґ
+      4   ->     ₴                $
+      5   ->     ₽                €
+      9   ->     «                „
+      0   ->     »                “
+      -   ->     –                —
+```
+
+Left Alt is untouched, so application shortcuts keep working. Caps Lock also
+capitalises the AltGr letters (Caps Lock + AltGr-S gives І); the grave key is
+excluded, as on Windows.
+
+To install:
+
+```sh
+./linux/install.sh      # asks for sudo itself
+```
+
+It compiles the layout first and refuses to install a broken one, copies
+`linux/symbols/ruuaby` to `/usr/share/X11/xkb/symbols/ruuaby`, registers it in
+the XKB rules registry, and adds `ruuaby` to your KDE layout list (replacing a
+stock `ru` entry if there is one). After that it shows up as
+"Russian-Ukrainian-Belarusian" in System Settings > Input Devices > Keyboard >
+Layouts. Pass `--no-configure` to install it without touching your layout list.
+
+On Plasma 6 (Wayland) the running session picks the new list up immediately:
+KWin watches `kxkbrc` through KConfigWatcher, which only fires on a real value
+change, so the script writes the key twice. Plasma 5 / X11 gets the classic
+`org.kde.keyboard.reloadConfig` signal plus a `setxkbmap` call instead.
+
+`./linux/selftest.sh` checks that all twelve keys really produce the right
+characters, both from the installed file and from what the X server has loaded.
+`./linux/uninstall.sh` removes everything again.
+
+One caveat: the registry files (`evdev.xml`, `evdev.lst`, `base.xml`,
+`base.lst`) belong to the `xkb-data` package, so upgrading it drops the entry
+and the layout disappears from the settings list. The symbols file itself always
+survives. Just re-run `install.sh` - or copy `linux/apt-hook/99-ruuaby-xkb` to
+`/etc/apt/apt.conf.d/` (edit the path inside it first) to have it re-registered
+automatically after every upgrade.
+
+Tested on Ubuntu / Wayland / KDE Plasma 6.6.
 
 # Windows
 

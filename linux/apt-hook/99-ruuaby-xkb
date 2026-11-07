@@ -1,0 +1,13 @@
+// Optional. Copy to /etc/apt/apt.conf.d/99-ruuaby-xkb to re-register the
+// "Russian-Ukrainian-Belarusian" layout automatically after an xkb-data upgrade.
+//
+// evdev.xml, evdev.lst, base.xml and base.lst are owned by xkb-data, so an
+// upgrade of that package silently drops the registry entry and the layout
+// disappears from the KDE list. (/usr/share/X11/xkb/symbols/ruuaby itself is
+// not owned by any package and always survives.)
+//
+// Edit the path below to wherever this repository lives.
+
+DPkg::Post-Invoke {
+    "if [ -x /home/anand/works/own/ru-ua-by/linux/install.sh ] && [ -f /usr/share/X11/xkb/symbols/ruuaby ]; then /home/anand/works/own/ru-ua-by/linux/install.sh --register-only >/dev/null 2>&1 || true; fi";
+};
