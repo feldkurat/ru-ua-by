@@ -12,7 +12,7 @@ set -euo pipefail
 
 LAYOUT=ruuaby
 DESC="Russian-Ukrainian-Belarusian"
-SHORT=ru
+SHORT=RUB
 
 XKB_DIR=/usr/share/X11/xkb
 RULES_DIR="$XKB_DIR/rules"
